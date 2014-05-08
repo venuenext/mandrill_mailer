@@ -4,8 +4,7 @@ class BackgroundEmail < MandrillMailer::TemplateMailer
   default from: 'admin@example.com'
 
   def perform(args)
-    formatted_args = args.map {|k,v| k.to_sym if k.is_a?(String)} #sidekiq turns symbols to strings
-    email = mandrill_mail(formatted_args)
+    email = mandrill_mail(args)
     email.deliver
   end
 end

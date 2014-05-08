@@ -105,7 +105,7 @@ module MandrillMailer
     # Returns options
     def self.default(args)
       @defaults ||= {}
-      @defaults[:from] ||= 'example@email.com'
+      @defaults["from"] ||= 'example@email.com'
       @defaults.merge!(args)
     end
     class << self
@@ -123,7 +123,7 @@ module MandrillMailer
     #
     # test_setup_for :invite do |mailer, options|
     #   invitation = OpenStruct.new({
-    #     email: options[:email],
+    #     email: options["email"],
     #     owner_name: 'foobar',
     #     secret: rand(9000000..1000000).to_s
     #   })
@@ -148,7 +148,7 @@ module MandrillMailer
     #
     # Returns the duplicated String.
     def self.test(mailer_method, options={})
-      unless options[:email]
+      unless options["email"]
         raise InvalidEmail.new 'Please specify a :email option(email to send the test to)'
       end
 
@@ -226,10 +226,10 @@ module MandrillMailer
     def mandrill_mail(args)
 
       # Mandrill requires template content to be there
-      args[:template_content] = {"blank" => ""} if args[:template_content].blank?
+      args["template_content"] = {"blank" => ""} if args["template_content"].blank?
 
       # format the :to param to what Mandrill expects if a string or array is passed
-      args[:to] = format_to_params(args[:to])
+      args["to"] = format_to_params(args["to"])
 
       # Set the template name
       self.template_name = args.delete(:template)
@@ -245,27 +245,27 @@ module MandrillMailer
 
       # Construct message hash
       self.message = {
-        "subject" => args[:subject],
-        "from_email" => args[:from] || self.class.defaults[:from],
-        "from_name" => args[:from_name] || self.class.defaults[:from_name] || self.class.defaults[:from],
-        "to" => args[:to],
-        "headers" => args[:headers],
-        "important" => args[:important],
-        "track_opens" => args.fetch(:track_opens, true),
-        "track_clicks" => args.fetch(:track_clicks, true),
+        "subject" => args["subject"],
+        "from_email" => args["from"] || self.class.defaults["from"],
+        "from_name" => args["from_name"] || self.class.defaults["from_name"] || self.class.defaults["from"],
+        "to" => args["to"],
+        "headers" => args["headers"],
+        "important" => args["important"],
+        "track_opens" => args.fetch("track_opens", true),
+        "track_clicks" => args.fetch("track_clicks", true),
         "auto_text" => true,
-        "inline_css" => args[:inline_css],
-        "url_strip_qs" => args.fetch(:url_strip_qs, true),
-        "preserve_recipients" => args[:preserve_recipients],
-        "bcc_address" => args[:bcc],
-        "global_merge_vars" => mandrill_args(args[:vars]),
-        "merge_vars" => mandrill_rcpt_args(args[:recipient_vars]),
-        "tags" => args[:tags],
-        "subaccount" => args[:subaccount],
-        "google_analytics_domains" => args[:google_analytics_domains],
-        "google_analytics_campaign" => args[:google_analytics_campaign],
-        "metadata" => args[:metadata],
-        "attachments" => mandrill_attachment_args(args[:attachments])
+        "inline_css" => args["inline_css"],
+        "url_strip_qs" => args.fetch("url_strip_qs", true),
+        "preserve_recipients" => args["preserve_recipients"],
+        "bcc_address" => args["bcc"],
+        "global_merge_vars" => mandrill_args(args["vars"]),
+        "merge_vars" => mandrill_rcpt_args(args["recipient_vars"]),
+        "tags" => args["tags"],
+        "subaccount" => args["subaccount"],
+        "google_analytics_domains" => args["google_analytics_domains"],
+        "google_analytics_campaign" => args["google_analytics_campaign"],
+        "metadata" => args["metadata"],
+        "attachments" => mandrill_attachment_args(args["attachments"])
       }
 
       unless MandrillMailer.config.interceptor_params.nil?
@@ -310,9 +310,9 @@ module MandrillMailer
       return unless args
       args.map do |attachment|
         attachment.symbolize_keys!
-        type = attachment[:mimetype]
-        name = attachment[:filename]
-        file = attachment[:file]
+        type = attachment["mimetype"]
+        name = attachment["filename"]
+        file = attachment["file"]
         {"type" => type, "name" => name, "content" => Base64.encode64(file)}
       end
     end
@@ -343,7 +343,7 @@ module MandrillMailer
           end
         end
       else
-        options = args.extract_options!.merge({host: MandrillMailer.config.default_url_options[:host], protocol: MandrillMailer.config.default_url_options[:protocol]})
+        options = args.extract_options!.merge({host: MandrillMailer.config.default_url_options["host"], protocol: MandrillMailer.config.default_url_options["protocol"]})
         args << options
         Rails.application.routes.url_helpers.method(method).call(*args)
       end
