@@ -232,15 +232,15 @@ module MandrillMailer
       args["to"] = format_to_params(args["to"])
 
       # Set the template name
-      self.template_name = args.delete(:template)
+      self.template_name = args.delete("template")
 
       # Set the template content
-      self.template_content = mandrill_args(args.delete(:template_content))
+      self.template_content = mandrill_args(args.delete("template_content"))
 
-      self.async = args.delete(:async)
-      self.ip_pool = args.delete(:ip_pool)
-      if args.has_key?(:send_at)
-        self.send_at = args.delete(:send_at).getutc.strftime('%Y-%m-%d %H:%M:%S')
+      self.async = args.delete("async")
+      self.ip_pool = args.delete("ip_pool")
+      if args.has_key?("send_at")
+        self.send_at = args.delete("send_at").getutc.strftime('%Y-%m-%d %H:%M:%S')
       end
 
       # Construct message hash
