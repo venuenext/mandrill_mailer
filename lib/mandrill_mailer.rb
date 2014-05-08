@@ -3,6 +3,7 @@ require 'mandrill_mailer/railtie'
 require 'mandrill_mailer/mock'
 require 'mandrill_mailer/template_mailer'
 require 'mandrill_mailer/version'
+require 'mandrill_mailer/background_email'
 
 module MandrillMailer
   autoload :Mandrill, 'mandrill'
